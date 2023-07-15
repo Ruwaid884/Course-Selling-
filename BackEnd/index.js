@@ -8,10 +8,6 @@ const jwt = require('jsonwebtoken');
 //app.use(express.json());
 app.use(bodyParser.json())
 
-// let ADMINS = [];
-// let USERS = [];
-// let COURSES = [];
-
 
 const SECRETKEY = "h33loFromRu";
 const UserSecretKey = "infinity";
@@ -87,74 +83,6 @@ const authenticateJwtUsers = (req,res,next)=>{
   }
 }
 
-
-// function loadAdmins(){
-//   try {
-//     const data = fs.readFileSync('admins.json');
-//     ADMINS = JSON.parse(data);
-//   } catch (error) {
-//     ADMINS = [];
-//   }
-
-// }
-
-// function saveAdmins(){
-//   fs.writeFileSync('admins.json', JSON.stringify(ADMINS));
-// }
-
-// function saveCourses(){
-//   fs.writeFileSync('courses.json', JSON.stringify(COURSES));
-// }
-
-
-// function loadCourses() {
-//   try {
-//     const data = fs.readFileSync('courses.json');
-//     COURSES = JSON.parse(data);
-//   } catch (error) {
-//     COURSES = [];
-//   }
-// }
-
-
-
-// function loadUsers() {
-//   try {
-//     const data = fs.readFileSync('users.json');
-//     USERS = JSON.parse(data);
-//   } catch (error) {
-//     USERS = [];
-//   }
-// }
-// loadUsers();
-// loadAdmins();
-// loadCourses();
-
-// // Save todos to file
-// function saveUsers() {
-//   fs.writeFileSync('users.json', JSON.stringify(USERS));
-// }
-
-// function uniqueUserName(username){
-// for(let i =0;i<USERS.length;i++){
-//   if(username === USERS[i].username) return false;
-// }
-
-// return true;
-
-// }
-
-
-
-// function uniqueAdminName(username){
-//   for(let i =0;i<ADMINS.length;i++){
-//     if(username === ADMINS[i].username) return false
-//   }
-  
-//   return true;
-  
-//   }
-
 // Admin routes
 app.post('/admin/signup', async (req, res) => {
   // logic to sign up admin
@@ -162,14 +90,10 @@ app.post('/admin/signup', async (req, res) => {
   const {username,password} = req.body;
   const admin = await Admin.findOne({username})
   if(!admin){
-    // const admin = {
-    //   username: username,
-    //   password : password
-    // }
+   
     const newAdmin = new Admin({username,password});
     await newAdmin.save();
-    // ADMINS.push(admin);
-    // saveAdmins();
+  
     const token = GenerateJwt({username,role:'admin'},SECRETKEY);
     res.status(200).send({message: "Admin created successfully",token});
 
@@ -184,9 +108,6 @@ app.post('/admin/signup', async (req, res) => {
 });
 
 app.post('/admin/login',async (req, res) => {
-  // logic to log in admin
- 
-  // const admin = ADMINS.find(a=>a.username ===username && a.password === password);
   const {username,password} =req.headers;
   const admin = await Admin.findOne({username,password});
   if(admin){
@@ -266,7 +187,6 @@ app.post('/users/signup',async (req, res) => {
 app.post('/users/login', async(req, res) => {
   // logic to log in user
    const {username,password} =req.headers;
-   //  const user = USERS.find(a=>a.username === username && a.password === password);
   
    const user = await User.findOne({username,password});
    
@@ -286,9 +206,7 @@ app.post('/users/login', async(req, res) => {
 app.get('/users/courses',authenticateJwtUsers, async(req, res) => {
   // logic to list all courses
   const courses = await Course.find({published:true});
-  // const output = {
-  //   courses: COURSES
-  // }
+
   res.status(200).json({courses});
   
 });
