@@ -1,13 +1,19 @@
 import { Button, Card, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { coursesState } from "./store/atoms/courses";
+import { coursesLoading, myCourses } from "./store/selectors/courses";
 
 
 function Courses() {
 
+  const setCourses = useSetRecoilState(coursesState);
+  const courses = useRecoilValue(myCourses);
+  const isLoading = useRecoilValue(coursesLoading);
 
-  const [courses, setCourses] = useState([]);
+  
 
   useEffect(() => {
 
@@ -19,12 +25,27 @@ function Courses() {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
     }).then((res)=>{
-        setCourses(res.data.courses);
+        setCourses({
+          isLoading:false,
+          courses:res.data.courses
+        });
+    }).catch(()=>{
+      setCourses({
+        isLoading:false,
+        courses:null
+      })
     })
    
    
     
   }, []);
+  
+
+  if (isLoading) {
+    return <div style={{height: "100vh", justifyContent: "center", flexDirection: "column"}}>
+        Loading....
+    </div>
+}
 
   return (
     <div

@@ -1,30 +1,22 @@
 import { Button, Typography } from "@mui/material";
 // import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useRecoilValue,useSetRecoilState } from "recoil";
+import {userEmailState} from "./store/selectors/userEmailState";
+import {userLoadingState} from "./store/selectors/userLoadingState";
+import { userState } from "./store/atoms/user";
 
 
-function AppBar({userEmail}) {
+function AppBar() {
   const navigate = useNavigate();
+  const userLoading = useRecoilValue(userLoadingState);
+  const userEmail = useRecoilValue(userEmailState);
+  const setUser = useSetRecoilState(userState); 
 
+  if(userLoading){
+    return <div></div>
+  }
 
-  // useEffect(() => {
-  //   function callback2(data) {
-  //     if (data.username) {
-  //       setUserEmail(data.username);
-  //     }
-  //   }
-  //   function callback1(res) {
-  //     res.json().then(callback2);
-  //   }
-  //   console.log("token - " + localStorage.getItem("token"));
-    
-  //   fetch("http://localhost:3000/admin/me", {
-  //     method: "GET",
-  //     headers: {
-  //       Authorization: "Bearer " + localStorage.getItem("token"),
-  //     },
-  //   }).then(callback1);
-  // }, []);
 
   if (userEmail) {
     return <div
@@ -61,7 +53,10 @@ function AppBar({userEmail}) {
                         variant={"contained"}
                         onClick={() => {
                             localStorage.setItem("token", null);
-                            window.location = "/";
+                          setUser({
+                            isLoading:false,
+                            userEmail:null
+                          })
                         }}
                     >Logout</Button>
                 </div>
