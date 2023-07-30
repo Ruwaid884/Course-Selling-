@@ -58,7 +58,6 @@ router.post('/signup', async (req, res) => {
     const admin = await Admin.findOne({ username: req.user.username });
     if (!admin) {
       res.status(403).json({msg: "Admin doesnt exist"})
-      return
     }
     res.json({
         username: admin.username
@@ -104,13 +103,13 @@ router.post('/signup', async (req, res) => {
   
   router.get('/courses',authenticateJwt, async (req, res) => {
     const courses = await Course.find({})
-    res.status(200).send({courses});
+    res.status(200).json({courses:courses});
   });
 
   router.get('/course/:courseId', authenticateJwt, async (req, res) => {
     const courseId = req.params.courseId;
     const course = await Course.findById(courseId);
-    res.json({ course });
+    res.json({course});
   });
 
   module.exports = router

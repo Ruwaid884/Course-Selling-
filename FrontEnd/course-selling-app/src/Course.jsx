@@ -1,4 +1,4 @@
-import { Card, Grid } from "@mui/material";
+import { Card, Grid,Box,FormControlLabel,Checkbox } from "@mui/material";
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom";
 import { Typography, TextField, Button } from "@mui/material";
@@ -9,11 +9,14 @@ import { courseState } from "./store/atoms/course";
 
 function Course() {
     let { courseId } = useParams();
+    console.log(courseId);
     const setCourse = useSetRecoilState(courseState);
-    const CourseLoading = useRecoilValue(isCourseLoading)
+    const CourseLoading = useRecoilValue(isCourseLoading);
+    
 
     
     useEffect(() => {
+    
         axios.get("http://localhost:3000/admin/course/" + courseId, {
             method: "GET",
             headers: {
@@ -59,26 +62,25 @@ function GrayTopper() {
     </div>
 }
 
+
 function UpdateCard() {
     
     const [courseDetails,setCourse]=useRecoilState(courseState)
-    
-    const [title, setTitle] = useState(courseDetails.course.title);
-    const [description, setDescription] = useState(courseDetails.course.description);
-    const [image, setImage] = useState(courseDetails.course.imageLink);
-    const [price, setPrice] = useState(courseDetails.course.price || '');
 
-    useEffect(() => {
-    setTitle(courseDetails.course.title);
-    setDescription(courseDetails.course.description);
-    setImage(courseDetails.course.imageLink);
-    if(courseDetails.course.price)
-    setPrice(courseDetails.course.price);
-  }, [courseDetails]);
+    
+  const [title, setTitle] = useState(courseDetails.course.title);
+  const [description, setDescription] = useState(courseDetails.course.description);
+  const [image, setImage] = useState(courseDetails.course.imageLink);
+  const [price, setPrice] = useState(courseDetails.course.price);
+  const [isChecked,setIsChecked]= useState(courseDetails.course.published);
+
+
+
 
     return <div style={{display: "flex", justifyContent: "center"}}>
     <Card varint={"outlined"} style={{maxWidth: 600, marginTop: 200}}>
         <div style={{padding: 20}}>
+            
             <Typography style={{marginBottom: 10}}>Update course details</Typography>
             <TextField
                 value={title}
@@ -129,6 +131,22 @@ function UpdateCard() {
                 variant="outlined"
             />
 
+          <Typography display={"flex"}  marginTop={1} variant="h6">
+            <Box>
+              <FormControlLabel label ="Publish"  control = {
+                 <Checkbox    
+                  checked={isChecked}
+                 onChange={(e)=>{
+                 
+                   setIsChecked(e.target.checked);
+                   
+                 }}/>
+              }/>
+
+            </Box>
+          
+            </Typography>
+
             <Button
                 variant="contained"
                 onClick={async () => {
@@ -136,7 +154,7 @@ function UpdateCard() {
                         title: title,
                         description: description,
                         imageLink: image,
-                        published: true,
+                        published: isChecked,
                         price: price
                     }, {
                         headers: {
@@ -149,7 +167,8 @@ function UpdateCard() {
                         title: title,
                         description: description,
                         imageLink: image,
-                        price:price
+                        price:price,
+                        published:isChecked
                     };
                     setCourse({isLoading:false,course:updatedCourse});
                 }}
@@ -171,9 +190,9 @@ function CourseCard() {
         paddingBottom: 15,
         zIndex: 2
     }}>
-        <Image></Image>
+          <Image></Image>
         <div style={{marginLeft: 10}}>
-        
+      
         <Description></Description>
            <Price></Price>
         </div>
@@ -184,9 +203,7 @@ function CourseCard() {
 
 function Image(){
     const imageLink = useRecoilValue(courseImage);
-    return <div>
-        <img src={imageLink} style={{width: 350}} ></img>
-    </div>
+    return <img src={imageLink} style={{width: 350}} ></img>
     
 }
 

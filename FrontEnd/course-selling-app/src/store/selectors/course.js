@@ -11,6 +11,16 @@ export const isCourseLoading = selector({
   },
 });
 
+
+export const publishCourse = selector({
+  key:'publishCourse',
+  get: ({get})=>{
+    const state = get(courseState);
+    if(state.course)
+    return state.course.published;
+  }
+})
+
 export const courseDetails = selector({
   key: 'courseDetailsState',
   get: ({get}) => {
@@ -57,8 +67,9 @@ export const courseImage = selector({
   get: ({get}) => {
     const state = get(courseState);
     if (state.course) {
-        return state.course.image;
+        return state.course.imageLink;
     }
     return "";
   },
 });
+

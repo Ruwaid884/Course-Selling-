@@ -7,3 +7,11 @@ export const coursesState = atom({
     courses: []
   },
 });
+
+export const purchasedCourse = atom({
+  key: 'purchasedCourse',
+  default: {
+    isLoading: true,
+    purchasedCourses: []
+  },
+});

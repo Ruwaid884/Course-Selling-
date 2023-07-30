@@ -1,18 +1,21 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Signup from "./signup"
+import AdminSignup from './AdminSignup';
 import AppBar from "./appbar"
-import Signin from './signin';
+import AdminSignin from './Adminsignin';
+import UserSignin from './usersignin';
 import Courses from "./Courses";
 import Course from "./Course";
 import AddCourse from './AddCourse';
+import UserSignup from './UserSignup';
 import { Landing } from './Landing';
 import { useEffect } from 'react';
 import axios from 'axios';
-import { userState } from "./store/atoms/user.js";
+import { UserState, adminState } from "./store/atoms/user.js";
 import {
     RecoilRoot,
     useSetRecoilState
 } from 'recoil';
+import PurchasedCourses from './PurchasedCourse';
 
 
 function App() {
@@ -24,13 +27,18 @@ function App() {
             >
                     <Router>
                         <AppBar></AppBar>
-                        <InitUser />
+                        <InitAdmin />
+                        <InitUser/>
                         <Routes>
                             <Route path={"/addcourse"} element={<AddCourse />} />
                             <Route path={"/course/:courseId"} element={<Course />} />
                             <Route path={"/courses"} element={<Courses />} />
-                            <Route path={"/signin"} element={<Signin />} />
-                            <Route path={"/signup"} element={<Signup />} />
+                            <Route path={"/admin/signin"} element={<AdminSignin />} />
+                            <Route path={"/user/signin"} element={<UserSignin />} />
+                            <Route path={"/user/signup"} element={<UserSignup />} />
+                            <Route path={"/admin/signup"} element={<AdminSignup />} />
+                            <Route path={"/purchasedCourses"} element = {<PurchasedCourses/>}/>
+                            
                             <Route path={"/"} element={<Landing />} />
                         </Routes>
                     </Router>
@@ -40,11 +48,50 @@ function App() {
 }
 
 
-function InitUser() {
-    const setUser = useSetRecoilState(userState);
+function InitAdmin() {
+    const setAdmin = useSetRecoilState(adminState);
     const init = async() => {
         try {
             const response = await axios.get(`http://localhost:3000/admin/me`, {
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                }
+            })
+
+            if (response.data.username) {
+                setAdmin({
+                    isLoading: false,
+                    userEmail: response.data.username
+                })
+            } else {
+                setAdmin({
+                    isLoading: false,
+                    userEmail: null
+                })
+            }
+        } catch (e) {
+
+            setAdmin({
+                isLoading: false,
+                userEmail: null
+            })
+        }
+    };
+
+    useEffect(() => {
+        init();
+    }, []);
+
+    return <></>
+}
+
+
+
+function InitUser() {
+    const setUser = useSetRecoilState(UserState);
+    const init = async() => {
+        try {
+            const response = await axios.get(`http://localhost:3000/user/me`, {
                 headers: {
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 }

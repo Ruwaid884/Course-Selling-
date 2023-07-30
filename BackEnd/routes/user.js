@@ -59,6 +59,15 @@ router.post('/signup',async (req, res) => {
     res.status(200).json({courses});
     
   });
+
+  router.get('/me',authenticateJwtUsers, async(req, res) => {
+    const user = await User.findOne({username:req.user.username});
+    if(user){
+      res.status(200).json({username : user.username});
+    }
+    else res.status(403).json({message:"user not found"});
+    
+  });
   
   router.post('/courses/:courseId',authenticateJwtUsers,async (req, res) => {
     // logic to purchase a course
