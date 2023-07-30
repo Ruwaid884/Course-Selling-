@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import { UserState } from "./store/atoms/user";
 
+
 function UserSignup() {
   const setUser = useSetRecoilState(UserState);
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ function UserSignup() {
                 }}
               >
                 <div>
-                  <img onClick={()=>{
+                <img onClick={()=>{
                     navigate("/")
                   }}
                     width={130}
@@ -92,7 +93,7 @@ function UserSignup() {
                     isLoading: false,
                     userEmail: email,
                   });
-                  navigate("/courses");
+                  navigate("/");
                 }}
                 variant="contained"
               >
@@ -110,9 +111,8 @@ function UserSignup() {
                     paddingRight:10
                 }}>Already registered?</span>
                 <span onClick={()=>{
-                    navigate("/user/signin")
-
-                }} style={{
+        navigate("/user/signin");
+      }}  style={{
                     color:"#2196f3"
                 }}>Signin</span>
               </Card>

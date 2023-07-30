@@ -35,7 +35,7 @@ router.post('/signup',async (req, res) => {
   
   router.post('/login', async(req, res) => {
     // logic to log in user
-     const {username,password} =req.headers;
+     const {username,password} =req.body;
     
      const user = await User.findOne({username,password});
      
@@ -47,7 +47,7 @@ router.post('/signup',async (req, res) => {
       
      }
      else{
-      res.status(403).json({message:'admin auth failed'})
+      res.status(400).json({message:'admin auth failed'})
      }
   
   });

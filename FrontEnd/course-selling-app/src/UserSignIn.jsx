@@ -92,7 +92,7 @@ function UserSignin() {
                     isLoading: false,
                     userEmail: email,
                   });
-                  navigate("/courses");
+                  navigate("/");
                 }}
                 variant="contained"
               >

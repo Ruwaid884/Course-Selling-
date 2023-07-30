@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AdminSignup from './AdminSignup';
 import AppBar from "./appbar"
 import AdminSignin from './Adminsignin';
-import UserSignin from './usersignin';
+import UserSignin from './UserSignin';
 import Courses from "./Courses";
 import Course from "./Course";
 import AddCourse from './AddCourse';
