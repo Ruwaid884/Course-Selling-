@@ -96,7 +96,7 @@ function AdminSignup() {
                 }}
                 variant="contained"
               >
-                SignIn
+                Signup
               </Button>
 
               <Card variant="outlined" style={{

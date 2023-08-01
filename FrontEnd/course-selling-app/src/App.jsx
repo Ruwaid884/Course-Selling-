@@ -16,7 +16,7 @@ import {
     useSetRecoilState
 } from 'recoil';
 import PurchasedCourses from './PurchasedCourse';
-
+import Chat from './chat ';
 
 function App() {
     return (
@@ -38,7 +38,7 @@ function App() {
                             <Route path={"/user/signup"} element={<UserSignup />} />
                             <Route path={"/admin/signup"} element={<AdminSignup />} />
                             <Route path={"/purchasedCourses"} element = {<PurchasedCourses/>}/>
-                            
+                            <Route path={"/chat/:admin"} element = {<Chat/>}/>
                             <Route path={"/"} element={<Landing />} />
                         </Routes>
                     </Router>

@@ -102,7 +102,7 @@ router.post('/signup', async (req, res) => {
   );
   
   router.get('/courses',authenticateJwt, async (req, res) => {
-    const courses = await Course.find({})
+    const courses = await Course.find({postedBy:req.user.username})
     res.status(200).json({courses:courses});
   });
 

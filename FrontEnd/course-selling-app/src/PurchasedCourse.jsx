@@ -1,10 +1,11 @@
 
 import { useEffect } from "react";
 import axios from "axios";
-import { Button, Card, Typography } from "@mui/material";
+import { Button, Card, Grid, Typography } from "@mui/material";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { purchaseState } from "./store/atoms/purchase";
 import { PurchasecoursesLoading, purchase } from "./store/selectors/purchasedcourse";
+import {  useNavigate } from "react-router-dom";
 
 function PurchasedCourses() {
   const setCourses = useSetRecoilState(purchaseState);
@@ -47,19 +48,31 @@ function PurchasedCourses() {
   }
 
   return (
-    <div
-      style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}
-    >
-      {courses.map((course) => {
-        return <Course course={course} />;
-      })}
+    <div>
+      <Typography
+        textAlign={"center"}
+        variant="h5"
+        style={{ marginTop: 10 }}
+      >
+      PURCHASED COURSES
+      </Typography>
+      
+
+      <div
+        style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}
+      >
+        {courses.map((course) => {
+          return <Course course={course} />;
+        })}
+      </div>
     </div>
   );
 }
 
 function Course({ course }) {
+  const navigate = useNavigate();
   return (
-    <Card
+   <Card
       style={{
         margin: 10,
         width: 300,
@@ -81,9 +94,25 @@ function Course({ course }) {
           justifyContent: "center",
         }}
       >
-        <Button variant="contained" size="small">
-          View
-        </Button>
+          <div>
+            <Button
+              variant="contained"
+              size="small" 
+              style={{marginRight:10}}
+            >
+             VIEW
+            </Button>
+            <Button
+              variant="contained"
+              size="small"
+              onClick={()=>{
+                navigate("/chat/"+course.postedBy);
+              }}
+        
+            >
+              CLASSROOM
+            </Button>
+            </div>
       </div>
     </Card>
   );

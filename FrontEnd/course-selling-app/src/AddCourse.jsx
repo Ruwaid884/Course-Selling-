@@ -3,6 +3,8 @@ import Button from "@mui/material/Button";
 import { Box, Card, Checkbox, FormControlLabel, Grid, Typography } from "@mui/material";
 import { useState } from "react";
 import axios from "axios";
+import { useRecoilState } from "recoil";
+import { userEmailState } from "./store/selectors/userEmailState";
 
 function AddCourse() {
   const [title, setTitle] = useState("");
@@ -10,6 +12,8 @@ function AddCourse() {
   const [image, setImage] = useState("");
   const [priceTag,setPrice] =useState("")
   const [isChecked, setIsChecked] = useState(false);
+  const adminEmail = useRecoilState(userEmailState)[0];
+  
 
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
@@ -113,6 +117,7 @@ function AddCourse() {
                 price:priceTag,
                 imageLink:image,
                 published:isChecked,
+                postedBy:adminEmail
            } ,{
               headers: {
                 

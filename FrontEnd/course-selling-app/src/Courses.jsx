@@ -16,6 +16,8 @@ function Courses() {
   const adminEmail = useRecoilValue(userEmailState);
 
   useEffect(() => {
+    console.log(adminEmail);
+    console.log(userEmail);
     if (adminEmail) {
       axios
         .get("http://localhost:3000/admin/courses/", {
@@ -35,8 +37,7 @@ function Courses() {
             courses: [],
           });
         });
-    } 
-    else if (userEmail) {
+    } else if (userEmail) {
       axios
         .get("http://localhost:3000/user/courses/", {
           headers: {
@@ -73,12 +74,23 @@ function Courses() {
   }
 
   return (
-    <div
-      style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}
-    >
-      {courses.map((course) => {
-        return <Course course={course} />;
-      })}
+    <div>
+    {adminEmail &&  <Typography
+        textAlign={"center"}
+        variant="h5"
+        style={{ marginTop: 10 }}
+      >
+        COURSES UPLOADED BY YOU
+      </Typography>
+      }
+
+      <div
+        style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}
+      >
+        {courses.map((course) => {
+          return <Course course={course} />;
+        })}
+      </div>
     </div>
   );
 }
@@ -112,16 +124,28 @@ function Course({ course }) {
         }}
       >
         {adminEmail && (
-          <Button
-            variant="contained"
-            size="small"
-            onClick={async () => {
-              setCourse({ isLoading: false, course: course });
-              navigate("/course/" + course._id);
-            }}
-          >
-            Update
-          </Button>
+          <div>
+            <Button
+              variant="contained"
+              size="small" 
+              style={{marginRight:10}}
+              onClick={async () => {
+                setCourse({ isLoading: false, course: course });
+                navigate("/course/" + course._id);
+              }}
+            >
+              Update
+            </Button>
+            <Button
+              variant="contained"
+              size="small"
+              onClick={() => {
+                navigate("/chat/" + adminEmail);
+              }}
+            >
+              Chat Room
+            </Button>
+          </div>
         )}
 
         {userEmail && (
@@ -134,7 +158,7 @@ function Course({ course }) {
                 console.log("No token found in localStorage.");
                 return;
               }
-          
+
               axios
                 .post(
                   "http://localhost:3000/user/courses/" + course._id,
@@ -146,7 +170,7 @@ function Course({ course }) {
                   }
                 )
                 .then(() => {
-                  alert("course purchased successfully")
+                  alert("course purchased successfully");
                 })
                 .catch(() => {
                   alert("Course already purchased");
