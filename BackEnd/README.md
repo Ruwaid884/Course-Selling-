@@ -10,6 +10,7 @@
 5. Users should be able to purchase courses
 6. Users should be able to view purchased courses
 7. Users should be able to view all courses
+8. There should be a room in which users who purchased the course should be able to chat with each other and the admin who posted the course
 
 ## Routes
 ### Admin Routes:
