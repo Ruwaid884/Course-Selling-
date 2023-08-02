@@ -8,9 +8,11 @@ import { EmailState, userEmailState } from "./store/selectors/userEmailState";
 function name({username,adminname}){
 
     if(username) return username;
-    else return adminname
+    else return adminname;
 
 }
+
+
 
 
 function Chat(){
@@ -19,6 +21,7 @@ function Chat(){
     const username = useRecoilValue(EmailState);
     const adminname = useRecoilValue(userEmailState);
     const [messageList,setMessageList] = useState([]);
+    let num =1;
 
 
     const sendMessage = async()=>{
@@ -36,12 +39,15 @@ function Chat(){
         }
     }
 
+   
+
     useEffect(()=>{
         socket.emit("join_room", admin);
+        if(num ===1)
         socket.on("receive",(data)=>{
-            setMessageList((list)=>[...list,data]);
-        })
-    
+          setMessageList((list)=>[...list,data]);
+      })
+      num++;
     },[admin]);
 
 

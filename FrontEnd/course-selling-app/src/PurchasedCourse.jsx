@@ -1,16 +1,20 @@
 
 import { useEffect } from "react";
 import axios from "axios";
-import { Button, Card, Grid, Typography } from "@mui/material";
+import { Button, Card, Typography } from "@mui/material";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { purchaseState } from "./store/atoms/purchase";
 import { PurchasecoursesLoading, purchase } from "./store/selectors/purchasedcourse";
 import {  useNavigate } from "react-router-dom";
+import { socketState } from "./store/atoms/socket";
+
+
 
 function PurchasedCourses() {
   const setCourses = useSetRecoilState(purchaseState);
   const courses = useRecoilValue(purchase);
   const isLoading = useRecoilValue(PurchasecoursesLoading);
+
 
   useEffect(() => {
     axios
@@ -70,6 +74,7 @@ function PurchasedCourses() {
 }
 
 function Course({ course }) {
+  const setSocket = useSetRecoilState(socketState);
   const navigate = useNavigate();
   return (
    <Card
