@@ -1,0 +1,95 @@
+/* AppBar Container */
+.app-bar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: #050505;
+  }
+  
+  /* Logo Container */
+  .logo-container {
+    cursor: pointer;
+  }
+  
+  /* Menu Container */
+  .menu-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Menu Items */
+  .menu-items {
+    display: flex;
+  }
+  
+  /* Menu Item */
+  .menu-item {
+    margin-right: 10px;
+    color: #ffffff;
+    font-size: 16px;
+  }
+  
+  /* Mobile Menu */
+  .mobile-menu {
+    display: none;
+  }
+  
+  /* Mobile Menu Items */
+  .mobile-menu-items {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    position: absolute;
+    top: 70px;
+    right: 20px;
+    background: #050505;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Mobile Menu Button */
+  .mobile-menu button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
+  
+  /* Mobile Menu Button Span */
+  .mobile-menu button span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background: #ffffff;
+    margin: 5px;
+    transition: transform 0.3s;
+  }
+  
+  /* Mobile Menu Button Active */
+  .mobile-menu button.active span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+  
+  /* Mobile Menu Button Active */
+  .mobile-menu button.active span:nth-child(2) {
+    opacity: 0;
+  }
+  
+  /* Mobile Menu Button Active */
+  .mobile-menu button.active span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
+  
+  /* Media Query for Mobile Menu */
+  @media (max-width: 768px) {
+    .menu-container {
+      display: none;
+    }
+  
+    .mobile-menu {
+      display: flex;
+      align-items: center;
+    }
+  }
+  

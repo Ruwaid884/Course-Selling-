@@ -1,0 +1,102 @@
+
+/* Chat Container */
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  /* Chat Header */
+  .chat-header {
+    background-color: #2a87f0;
+    color: #fff;
+    padding: 10px 20px;
+    margin-bottom: 20px;
+  }
+  
+  /* Message List */
+  .message-list {
+    max-height: 400px;
+    width: 100%;
+    overflow-y: scroll;
+  }
+
+  /* Style for message content */
+.message-content {
+  border-radius: 8px;
+  padding: 8px 12px;
+  max-width: 70%;
+  word-wrap: break-word;
+  margin-bottom: 8px;
+}
+
+/* Style for sender's message content */
+.sender-message .message-content {
+  background-color: #2979ff;
+  color: #fff;
+  border-top-left-radius: 0; /* No radius on the top left for sender */
+  margin-left: auto; /* Push sender's message to the right */
+}
+.admin-sender-message {
+  /* Define your styles for the admin's messages here */
+  background-color: #2bd374;
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px 12px;
+  border-top-left-radius: 0; /* No radius on the top left for sender */
+  margin-left: auto; /* Push sender's message to the right */
+ 
+  align-items: center; /* Center content vertically */
+  justify-content: center; /* Center content horizontally */
+  margin-bottom: 8px;
+}
+/* Style for receiver's message content */
+.receiver-message .message-content {
+  background-color: #e0e0e0;
+  color: #000;
+  border-top-right-radius: 0; /* No radius on the top right for receiver */
+  margin-right: auto; /* Push receiver's message to the left */
+}
+
+  
+  /* Input Container */
+  .input-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-top: 20px;
+  }
+  
+  /* Input Field */
+  input[type="text"] {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+  }
+  
+  /* Send Button */
+  button {
+    background-color: #2a87f0;
+    color: #fff;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .message-time {
+    font-size: 12px; /* Adjust the font size as needed */
+    color: #888; /* Change the color to your preference */
+    text-align: right; /* Align the time to the right */
+  }
+
+  /* Style for sender's name (msg.sender) */
+.message-sender {
+  font-size: 12px; /* Adjust the font size as needed */
+  color: #000000; /* Optionally, change the color to a muted one */
+  margin-right: 4px; /* Add some spacing between the sender's name and the message */
+}
