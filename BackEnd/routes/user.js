@@ -163,11 +163,10 @@ router.get("/course/content/:courseId",authenticateJwtUsers,async(req,res)=>{
     res.status(500).json({ error: 'Internal server error', message: error.message }); 
   }
 });
-
-router.get('/video/:videoId', authenticateJwtUsers, async (req, res) => {
-  const videoId = req.params.videoId;
+router.get("/course/video/:videoId",authenticateJwtUsers,async(req,res)=>{
+  const Id = req.params.videoId;
   try{
-    const video = await Video.findById(videoId);
+    const video = await Video.findById(Id);
     console.log(video);
     if (!video) {
       return res.status(404).send('Video not found');

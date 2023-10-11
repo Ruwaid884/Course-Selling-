@@ -29,7 +29,8 @@ const messageSchema = new mongoose.Schema({
 
 const videoSchema = new mongoose.Schema({
   title: String,
-  description: String,
+  image: String,
+  thumb:String,
   videoUrl: String, 
   courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
   playableUrl:String,
