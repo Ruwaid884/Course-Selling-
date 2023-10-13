@@ -2,7 +2,6 @@ import  { useState, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
-import { isCourseLoading } from './store/selectors/course';
 import { EmailState, userEmailState } from './store/selectors/userEmailState';
 import './CourseContent.css'; // Import your custom CSS file for styling
 
@@ -11,8 +10,9 @@ const CourseContent = () => {
   const [courseTitle, setCourseTitle] = useState(''); // Added courseTitle state
   const [courseDescription, setCourseDescription] = useState(''); // Added courseDescription state
   const [courseImage, setCourseImage] = useState(''); // Added courseImage state
+  const [courseThumb, setCourseThumb]=useState('');
   let { courseId } = useParams();
-  const CourseLoading = useRecoilValue(isCourseLoading);
+ 
   const [message, setMessage] = useState('');
   const [showMessage, setShowMessage] = useState(false);
   const adminEmail = useRecoilValue(EmailState);
@@ -21,6 +21,11 @@ const CourseContent = () => {
 
   // Create a ref for the file input
   const fileInputRef = useRef(null);
+  const imageRef = useRef(null);
+  const desRef = useRef(null);
+  const titleRef = useRef(null);
+  const thumbnailRef = useRef(null);
+
 
   // Redirect to the home page if neither admin nor user is authenticated
   if (!adminEmail && !userEmail) {
@@ -28,13 +33,7 @@ const CourseContent = () => {
   }
 
   // Display a loading screen while the course data is being fetched
-  if (CourseLoading) {
-    return (
-      <div className="loading-container">
-        <div className="loading-text">Loading...</div>
-      </div>
-    );
-  }
+ 
 
   const handleFileChange = (event) => {
     setVideo(event.target.files[0]);
@@ -49,7 +48,10 @@ const CourseContent = () => {
       return;
     }
     formData.append('video', video);
-    formData
+    formData.append('title',courseTitle);
+    formData.append('description',courseDescription);
+    formData.append('image',courseImage)
+    formData.append('thumb',courseThumb)
 
     try {
       await axios.post("http://localhost:3000/admin/upload/" + courseId, formData, {
@@ -69,6 +71,17 @@ const CourseContent = () => {
         setShowMessage(false);
         formData.delete('video'); // Clear the FormData
         fileInputRef.current.value = ''; // Clear the file input
+        courseDescription.value='';
+        courseTitle.value='';
+        titleRef.current.value='';
+        desRef.current.value='';
+
+        imageRef.current.value='';
+
+        thumbnailRef.current.value='';
+
+        titleRef.current.value='';
+
       }, 2000); // 2 seconds
     } catch (error) {
       // Handle errors (e.g., display an error message to the admin)
@@ -86,28 +99,34 @@ const CourseContent = () => {
           placeholder="Course Title"
           value={courseTitle}
           onChange={(e) => setCourseTitle(e.target.value)}
+          ref={titleRef}
+          
         />
         <textarea
           placeholder="Course Description"
           value={courseDescription}
           onChange={(e) => setCourseDescription(e.target.value)}
+          ref={desRef}
+          
         />
         <input
           type="text"
           placeholder="Course Image URL"
           value={courseImage}
           onChange={(e) => setCourseImage(e.target.value)}
+          ref={imageRef}
+        />
+
+<input
+          type="text"
+          placeholder="Course thumbnail URL"
+          value={courseThumb}
+          onChange={(e) => setCourseThumb(e.target.value)}
+          ref={thumbnailRef}
         />
       </div>
       
       <div className="upload-section">
-        <div className="course-header">
-          <img src={courseImage} alt={courseTitle} className="course-image" />
-          <div className="course-details">
-            <h1 className="course-title">{courseTitle}</h1>
-            <p className="course-description">{courseDescription}</p>
-          </div>
-        </div>
         <input
           type="file"
           accept="video/*"

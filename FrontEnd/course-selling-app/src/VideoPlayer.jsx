@@ -1,4 +1,4 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRecoilValue } from 'recoil';
 import { EmailState, userEmailState } from './store/selectors/userEmailState';
@@ -19,9 +19,9 @@ const VideoPlayer = () => {
 
   useEffect(() => {
     // Fetch video data from the backend API when the component mounts
-    axios.get("http://localhost:3000/user/course/content/" + courseId, {
+    axios.get(`http://localhost:3000/user/course/content/${courseId}`, {
       headers: {
-        Authorization: "Bearer " + localStorage.getItem("token"),
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     })
       .then((response) => {
@@ -34,24 +34,23 @@ const VideoPlayer = () => {
   }, []);
 
   return (
-    <div className="video-player-container">
-      <h1>Video Player</h1>
-      <div className="video-list">
-        {videos.map((video) => (
-          <div className="video-card" key={video._id}>
-            <img src={video.thumbnailUrl} alt={video.title} className="video-thumbnail" />
-            <div className="video-details">
-              <h2>{video.title}</h2>
-              <p>{video.description}</p>
-              <button onClick={() => {
-                navigate("/player/" + video._id);
-              }}>
-                Play Video
-              </button>
-            </div>
+    <div className="course-cards-container">
+      {videos.map((video) => (
+        <div
+          key={video._id}
+          className="course-card"
+          onClick={() => {
+            navigate("/player/" + video._id);
+          }}
+        >
+          <img src={video.image} alt={video.title} className="course-thumbnail" />
+          <div className="course-details">
+            <img src={video.thumb} alt="Author" className="author-avatar" />
+            <div className="course-title">{video.title}</div>
+            <div className="course-description">{video.description}</div>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
 };

@@ -30,6 +30,7 @@ const messageSchema = new mongoose.Schema({
 const videoSchema = new mongoose.Schema({
   title: String,
   image: String,
+  description:String,
   thumb:String,
   videoUrl: String, 
   courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
