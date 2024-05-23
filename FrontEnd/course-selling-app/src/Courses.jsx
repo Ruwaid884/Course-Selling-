@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { Button, Card, Typography } from "@mui/material";
 import { useRecoilValue, useSetRecoilState } from "recoil";
@@ -7,10 +7,14 @@ import { coursesLoading, myCourses } from "./store/selectors/courses";
 import { courseState } from "./store/atoms/course";
 import { EmailState, userEmailState } from "./store/selectors/userEmailState";
 import { useNavigate } from "react-router-dom";
+import { purchase } from "./store/selectors/purchasedcourse";
+import { purchaseState } from "./store/atoms/purchase";
+import Footer from "./Footer";
 
 
 function Courses() {
   const setCourses = useSetRecoilState(coursesState);
+  const setCoursespurchase = useSetRecoilState(purchaseState);
   const courses = useRecoilValue(myCourses);
   const isLoading = useRecoilValue(coursesLoading);
   const userEmail = useRecoilValue(EmailState);
@@ -21,9 +25,31 @@ function Courses() {
     navigate("/");
   }
 
+
+  useEffect(()=>{
+
+    axios
+    .get("http://localhost:3000/user/purchasedCourses/", {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    })
+    .then((res) => {
+      setCoursespurchase({
+        isLoading: false,
+        courses: res.data.purchasedCourses,
+      });
+    })
+    .catch(() => {
+      setCoursespurchase({
+        isLoading: false,
+        courses: [],
+      });
+    });
+
+  },[])
+
   useEffect(() => {
-    console.log(adminEmail);
-    console.log(userEmail);
     if (adminEmail) {
       axios
         .get("http://localhost:3000/admin/courses/", {
@@ -62,6 +88,8 @@ function Courses() {
             courses: null,
           });
         });
+
+        
     }
   }, []);
 
@@ -81,13 +109,19 @@ function Courses() {
   }
 
   return (
-    <div
+    <div>
+      <div
       style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}
     >
       {courses.map((course) => {
         return <Course course={course} key={course._id} />;
       })}
     </div>
+    <Footer/>
+
+    </div>
+    
+    
   );
 }
 
@@ -107,7 +141,7 @@ function loadScript(src) {
   });
 }
 
-const handleOpenRazorpay = (data, { course }) => {
+const handleOpenRazorpay = (data, { course },setflag) => {
 
   
   const KEY_ID = "rzp_test_O6a77B92kQOpHr";
@@ -159,6 +193,7 @@ const handleOpenRazorpay = (data, { course }) => {
             )
             .then(() => {
               alert("course purchased successfully");
+              setflag(true);
             })
             .catch(() => {
               alert("Course already purchased");
@@ -174,7 +209,7 @@ const handleOpenRazorpay = (data, { course }) => {
   }
 };
 
-const handlePayment = ({ course }) => {
+const handlePayment = ({ course },setflag) => {
   const _data = { amount: course.price };
   axios
     .post("http://localhost:3000/user/order", _data, {
@@ -183,7 +218,7 @@ const handlePayment = ({ course }) => {
       },
     })
     .then((res) => {
-      handleOpenRazorpay(res.data, { course });
+      handleOpenRazorpay(res.data, { course },setflag);
     })
     .catch((err) => {
       console.log(err);
@@ -191,10 +226,21 @@ const handlePayment = ({ course }) => {
 };
 
 function Course({ course }) {
+  const purchasedCourses = useRecoilValue(purchase);
   const setCourse = useSetRecoilState(courseState);
   const userEmail = useRecoilValue(EmailState);
   const adminEmail = useRecoilValue(userEmailState);
+  const [flag,setflag] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(()=>{
+
+    if (purchasedCourses.some(purchasedCourse => purchasedCourse._id === course._id)) {
+      setflag(true);
+  }
+
+  },[])
+  
 
   return (
     <Card
@@ -253,8 +299,8 @@ function Course({ course }) {
             variant="contained"
             size="small"
             onClick={
-              ()=>{
-                 axios
+              async()=>{
+                 await axios
                 .post(
                   "http://localhost:3000/user/lookpurchase/" + course._id,
                   {},
@@ -265,16 +311,22 @@ function Course({ course }) {
                   }
                 )
                 .then(() => {
-                  handlePayment({ course });
+                  handlePayment({ course },setflag);
+                  
                 })
                 .catch(() => {
-                navigate("/videos/content/"+course._id);
+                  console.log(purchasedCourses)
+                  console.log(flag)
+                  if(flag) navigate("/videos/content/" + course._id);
+                 
                 });
               }
             }
             style={{ margin: 2 }}
           >
-            Purchase
+            {
+              !flag?"purchase":"open"
+            }
           </Button>
         )}
       </div>

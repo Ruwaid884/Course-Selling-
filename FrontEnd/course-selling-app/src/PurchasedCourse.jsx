@@ -6,6 +6,7 @@ import { purchaseState } from "./store/atoms/purchase";
 import { PurchasecoursesLoading, purchase } from "./store/selectors/purchasedcourse";
 import { useNavigate } from "react-router-dom";
 import { EmailState, userEmailState } from "./store/selectors/userEmailState";
+import { courseImage } from "./store/selectors/course";
 
 function PurchasedCourses() {
   

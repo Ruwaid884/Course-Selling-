@@ -15,6 +15,57 @@
     padding: 10px 20px;
     margin-bottom: 20px;
   }
+
+
+
+
+  .attachment-button {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  /* Style for the attachment modal overlay */
+  .attachment-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  /* Style for the attachment modal itself (centered square) */
+  .attachment-modal {
+    position: absolute;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    width: 300px; /* Set the width of the square */
+    height: 300px; /* Set the height of the square */
+  }
+  
+  /* Style for the close button within the attachment modal */
+  .close-button {
+    background-color: #f02a2a;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  .upload-attach{
+    margin-top: 80%;
+    position: relative;
+    display: block;
+}
   
   /* Message List */
   .message-list {

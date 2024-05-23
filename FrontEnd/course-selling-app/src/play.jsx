@@ -7,6 +7,8 @@ const PlayerContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  z-index:0;
+  
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -55,12 +57,15 @@ const Player = () => {
 
   return (
     <PlayerContainer>
-      <div>
+      <span>
         <h2>{video.title}</h2>
         <VideoFrame src={video.videoUrl} controls />
-      </div>
+        <h4>{video.description}</h4>
+        <h2>Course Videos</h2>
+      </span>s
       <VideoList videos={videos} />
     </PlayerContainer>
+    
   );
 };
 
@@ -71,12 +76,11 @@ const VideoFrame = styled.video`
 `;
 
 const VideoListContainer = styled.div`
-  width: 300px;
-  margin-left: 20px;
   overflow-y: auto; /* Make the video list scrollable */
   max-height: 720px; /* Set a maximum height for the scrollable area */
   @media (max-width: 768px) {
-    margin-top: 20px;
+    margin-top: 10px;
+    width:100%
   }
 `;
 
@@ -86,13 +90,13 @@ const VideoList = ({ videos }) => {
 
   return (
     <VideoListContainer>
-      <h3>Course Videos</h3>
       <ul>
         {videos.map((video) => (
           <div
           key={video._id}
           className="course-card"
           onClick={() => {
+            window.scrollTo(0, 0);
             navigate("/player/" + video._id);
           }}
         >
