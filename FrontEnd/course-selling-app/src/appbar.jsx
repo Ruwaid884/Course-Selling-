@@ -10,6 +10,7 @@ import { coursesState } from "./store/atoms/courses";
 import axios from "axios";
 
 import "./AppBar.css";
+import Loader from "./circle";
 
 function AppBar() {
   const navigate = useNavigate();
@@ -93,9 +94,17 @@ function AppBar() {
   }
 
   if (adminLoading) {
-    return <div></div>;
+    return(
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection:"column", width:"100%"}}>
+      <Loader flag={true} />
+       </div>
+    )
   } else if (userLoading) {
-    return <div></div>;
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection:"column", width:"100%"}}>
+      <Loader flag={true} />
+       </div>
+    )
   }
 
   return (

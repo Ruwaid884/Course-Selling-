@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { purchase } from "./store/selectors/purchasedcourse";
 import { purchaseState } from "./store/atoms/purchase";
 import Footer from "./Footer";
+import Loader from "./circle";
 
 
 function Courses() {
@@ -95,15 +96,8 @@ function Courses() {
 
   if (isLoading) {
     return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
-        <Typography variant="h5">Loading...</Typography>
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection:"column", width:"100%"}}>
+    <Loader flag={true} />
       </div>
     );
   }

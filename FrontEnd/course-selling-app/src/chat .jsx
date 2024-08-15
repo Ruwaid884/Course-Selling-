@@ -1,162 +1,72 @@
-import { useEffect, useRef, useState } from "react";
-import io from "socket.io-client";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { useRecoilState, useRecoilValue } from "recoil";
+import {  useParams } from "react-router-dom";
 import axios from "axios";
-import { useRecoilValue } from "recoil";
+import io from "socket.io-client";
+import { chatMessagesState } from "./store/atoms/message"; // Import your atom
 import { EmailState, userEmailState } from "./store/selectors/userEmailState";
-
-import "./Chat.css"; // Import the CSS file for additional styles
+import "./Chat.css";
+import Loader from "./circle";
+import { Flag } from "@mui/icons-material";
 
 const socket = io.connect("http://localhost:3000");
 
 function Chat() {
-  let num = 1;
-  let { admin } = useParams();
+  const { admin } = useParams();
   const [currentMessage, setCurrentMessage] = useState("");
   const username = useRecoilValue(EmailState);
   const adminname = useRecoilValue(userEmailState);
-  const [messageList, setMessageList] = useState([]);
-  const [selectedAttachment,setSelectedAttachment]=useState(null);
+  const [messageList, setMessageList] = useRecoilState(chatMessagesState);
+  const [selectedAttachment, setSelectedAttachment] = useState(null);
   const [isAttachmentModalOpen, setAttachmentModalOpen] = useState(false);
-
-  const openAttachmentModal = () => {
-    setAttachmentModalOpen(true);
-  };
-
-  const closeAttachmentModal = () => {
-    setAttachmentModalOpen(false);
-    setSelectedAttachment(null);
-  };
-  
-  const handleAttachmentChange = (e)=>{
-    setSelectedAttachment(e.target.files[0]);
-  };
-
-  const downloadAttachment = (attachmentName) => {
-    console.log(attachmentName)
-
-    const options = {
-  width: 800, // Width of the new window
-  height: 600, // Height of the new window
-  left: 100, // X-coordinate of the new window
-  top: 100, // Y-coordinate of the new window
-  location: 1, // Show the address bar (0 for no, 1 for yes)
-  toolbar: 0, // Show the toolbar (0 for no, 1 for yes)
-  menubar: 0, // Show the menu bar (0 for no, 1 for yes)
-  scrollbars: 1, // Show scrollbars (0 for no, 1 for yes)
-};
-
-// Open the URL in a new window with options
- window.open(attachmentName.attachment, "_blank", options);
-  };
-
-
-
-
   const messageContainerRef = useRef(null);
+  const [Loading , setLoading] = useState(false);
 
-  const sendMessage = async () => {
-    if (currentMessage !== "" || selectedAttachment!=null) {
-      var formData = new FormData();
-      formData.append('attachment',selectedAttachment);
-      formData.append('room',admin);
-      formData.append('message',currentMessage);
-      formData.append('time',new Date(Date.now()).getHours() +
-      ":" +
-      new Date(Date.now()).getMinutes());
-
-      console.log(selectedAttachment);
-      const messageData = {
-        time:
-        new Date(Date.now()).getHours() +
-        ":" +
-        new Date(Date.now()).getMinutes(),
-        room: admin,
-        message: currentMessage,
-        sender: adminname || username,
-        attachment:selectedAttachment
-      };
-
-      await socket.emit("send_message", messageData);
-      setMessageList((list) => [...list, messageData]);
-      if (username) {
-        await axios.post(
-          "http://localhost:3000/user/chat/" + admin,formData,
-         
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-              "Authorization": "Bearer " + localStorage.getItem("token")
-            },
-          });
-      } else {
-        if (adminname) {
-          console.log(selectedAttachment);
-          await axios.post(
-            "http://localhost:3000/admin/chat/" + admin,formData,
-            {
-              headers: {
-                'Content-Type': 'multipart/form-data', // Required for file upload
-                "Authorization": "Bearer " + localStorage.getItem("token")
-              },
-            });
-        }
-      }
-    }
-    setCurrentMessage('');
-    scrollToBottom();
-
-  };
 
   useEffect(() => {
-
-  
     socket.emit("join_room", admin);
-    if (username) {
-      axios
-        .get("http://localhost:3000/user/chat/" + admin, {
-          method: "GET",
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        })
-        .then((res) => {
-          console.log({res})
-          setMessageList(res.data.messages);
-        })
-        .catch((error) => {
-          console.error(error);
-          setMessageList([]);
-        });
-    } else {
-      axios
-        .get("http://localhost:3000/admin/chat/" + admin, {
-          method: "GET",
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        })
-        .then((res) => {
-          console.log({res})
-          setMessageList(res.data.messages);
-        })
-        .catch((error) => {
-          console.error(error);
-          setMessageList([]);
-        });
-    }
+    fetchMessages();
+    setupSocketListeners();
 
+    return () => {
+      socket.off("receive");
+    };
+  }, [adminname,username]);
+
+
+  useEffect(()=>{
     scrollToBottom();
-    if (num == 1){
-      socket.on("receive", (data) => {
-        setMessageList((list) => [...list, data]);
-      scrollToBottom();
+  },[messageList])
 
+
+  const split = (url)=>{
+    const parts = url.split('/');
+    const lastPart = parts[parts.length - 1]; 
+    const nameParts = lastPart.split('-');
+    const extractedName = nameParts[1]; 
+    return extractedName;
+
+  }
+
+  const fetchMessages = async () => {
+    const url = `http://localhost:3000/${adminname ? 'admin' : 'user'}/chat/${admin}`;
+    try {
+      const res = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       });
+      setMessageList(res.data.messages);
+    } catch (error) {
+      setMessageList([]);
     }
-     
-    num++;
-  }, [admin]);
+  };
+
+  const setupSocketListeners = () => {
+    socket.on("receive", (data) => {
+      setMessageList((oldMessages) => [...oldMessages, data]);
+    });
+  };
 
   const scrollToBottom = () => {
     if (messageContainerRef.current) {
@@ -164,36 +74,92 @@ function Chat() {
     }
   };
 
+  const openAttachmentModal = () => setAttachmentModalOpen(true);
+  const closeAttachmentModal = () => {
+    setAttachmentModalOpen(false);
+    setSelectedAttachment(null);
+  };
+  const handleAttachmentChange = (e) => setSelectedAttachment(e.target.files[0]);
+
+  const downloadAttachment = (attachmentName) => {
+    const options = {
+      width: 800,
+      height: 600,
+      left: 100,
+      top: 100,
+      location: 1,
+      toolbar: 0,
+      menubar: 0,
+      scrollbars: 1,
+    };
+    window.open(attachmentName.attachment, "_blank", options);
+  };
+
+  const sendMessage = async () => {
+    setLoading(true);
+    if (currentMessage.trim() || selectedAttachment) {
+      const formData = new FormData();
+      formData.append('attachment', selectedAttachment);
+      formData.append('room', admin);
+      formData.append('sender',username?username:adminname)
+      formData.append('message', currentMessage);
+      formData.append('time', new Date().toLocaleTimeString());
+
+      const messageData = {
+        time: new Date().toLocaleTimeString(),
+        room: admin,
+        message: currentMessage,
+        sender: adminname || username,
+        attachment: selectedAttachment,
+      };
+
+      await socket.emit("send_message", messageData);
+      setMessageList((oldMessages) => [...oldMessages, messageData]);
+
+
+      const url = `http://localhost:3000/${adminname ? 'admin' : 'user'}/chat/${admin}`;
+       axios.post(url, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }).then(async()=>{
+        if(selectedAttachment){setLoading(true); await fetchMessages();}
+        setLoading(false);
+        closeAttachmentModal();
+        setCurrentMessage('');
+        setSelectedAttachment(null);
+      });
+
+     
+    }
+  };
+
   return (
-  
     <div className="chat-container">
       <div className="chat-header">
-        <h1>Admin cum classroom chat</h1>
+        <h1>Admin cum Classroom Chat</h1>
       </div>
       <div className="message-list" ref={messageContainerRef}>
-  {messageList.map((msg, index) => (
-    <div key={index} className={msg.sender === username ? "sender-message" :
-      (msg.sender === adminname ? "admin-sender-message" :( msg.sender === admin? "admin-sender-message":"receiver-message"))}>
-      <div className="message-content">
-        <strong className="message-sender">{msg.sender}</strong>
-        {msg.message && <p>{msg.message}</p>}
-        {msg.attachment && (
+        {messageList.map((msg, index) => (
+          <div key={index} className={
+            msg.sender === username ? "sender-message" :
+            msg.sender === adminname || msg.sender ===admin ? "admin-sender-message" : "receiver-message"
+          }>
+            <div className="message-content">
+              <strong className="message-sender">{msg.sender}</strong>
+              {msg.message && <p>{msg.message}</p>}
+              {msg.attachment && (
                 <div>
-                  <p>Attachment: {msg.attachment.name}</p>
-                  <button
-                    onClick={() => downloadAttachment(msg)}
-                  >
-                    Download
-                  </button>
+                  <p>Attachment: {msg.attachment.name ? msg.attachment.name : split(msg.attachment)}</p>
+                  <button onClick={() => downloadAttachment(msg)}>Download</button>
                 </div>
               )}
+            </div>
+            <div className="message-time">{msg.time}</div>
+          </div>
+        ))}
       </div>
-      <div className="message-time">
-        {msg.time}
-      </div>
-    </div>
-  ))}
-</div>
       <div className="input-container">
         <input
           type="text"
@@ -201,26 +167,25 @@ function Chat() {
           onChange={(e) => setCurrentMessage(e.target.value)}
           placeholder="Type your message..."
         />
-        <button onClick={sendMessage}>Send</button>
+        <button onClick={()=>{sendMessage(); scrollToBottom();}}>Send</button>
         <button onClick={openAttachmentModal}>📎</button>
-      
         {isAttachmentModalOpen && (
-        <div className="attachment-modal-overlay">
-          {/* Attachment modal */}
-          <div className="attachment-modal">
-            <button className="close-button" onClick={closeAttachmentModal}>
-              &times;
-            </button>
-            <input
-              type="file"
-              accept=".pdf,.jpg,.png"
-              onChange={handleAttachmentChange}
-              className="file-input"
-            />
-            <button onClick={sendMessage} className="upload-attach">Upload Attachment</button>
+          <div className="attachment-modal-overlay">
+            <div className="attachment-modal">
+              <button className="close-button" onClick={closeAttachmentModal}>
+                &times;
+              </button>
+              <input
+                type="file"
+                accept=".pdf,.jpg,.png"
+                onChange={handleAttachmentChange}
+                className="file-input"
+              />
+              <button onClick={()=>{sendMessage(); scrollToBottom();}} className="upload-attach">Upload Attachment</button>
+            </div>
+            {Loading && <Loader flag={false} />}
           </div>
-        </div>
-      )}
+        )}
       </div>
     </div>
   );

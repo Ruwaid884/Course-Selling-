@@ -1,9 +1,4 @@
-import { Grid, Typography} from "@mui/material";
 
-import Button from "@mui/material/Button";
-import { useNavigate} from "react-router-dom";
-import { useRecoilValue } from "recoil";
-import {EmailState, userEmailState} from "./store/selectors/userEmailState";
 import Footer from "./Footer";
 import { useRef } from "react";
 import "./Framer.css"
@@ -17,13 +12,11 @@ import {
   useAnimationFrame
 } from "framer-motion";
 import { wrap } from "@motionone/utils";
-
-
-
-
-
-
-
+import LandingPage from "./LandingPage";
+import CardLanding from "./cardsLandingpage";
+import { Grid } from "@mui/material";
+import MyComponent from "./AboutUs";
+import FeatureSection from "./Features";
 
 
 function ParallaxText({ children, baseVelocity = 100}) {
@@ -87,64 +80,37 @@ function ParallaxText({ children, baseVelocity = 100}) {
 
 
 export const Landing = () => {
-    const userEmail = useRecoilValue(userEmailState);
-    const Email = useRecoilValue(EmailState);
-    const navigate = useNavigate()
     return <div>
-        <Grid container style={{padding: "5vw",background:"#FFFFFF"}}>
+        <Grid container style={{paddingLeft: "1vw",background:"#FFFFFF"}}>
             <Grid item xs={12} md={6} lg={6}>
-                <div style={{marginTop: 100}}>
+                <div style={{marginTop: 30}}>
                  <Grid item xs={12} md={6} lg={6}>
                    <img style={{
                     width:150,
                     height:80
                    }} src={"https://bl-i.thgim.com/public/news/7gk5z8/article65615786.ece/alternates/FREE_1200/infinix.jpg"}  />
                   </Grid> 
-                  <Typography variant={"h5"}>
-                        A place to learn, earn and grow
-                    </Typography>
-                   { !(userEmail || Email) && <div style={{display: "flex", marginTop: 20}}>
+                   <div style={{display: "flex", marginTop: 20}}>
                     <div style={{ display:"flex",flexWrap:"wrap"}}>
-                    <Button style={{marginRight: 10,
-                    marginBottom:5,
-                     display:"flex",
-                     flexWrap:"wrap",
-                     background:"#050505",
-                     height:40,width:40,
-                     justifyContent:"center"}}
-                                size={"large"}
-                                variant={"contained"}
-                                onClick={() => {
-                                    navigate("/user/signin")
-                                }}
-                            >USER</Button>
-                        
-                        <Button style={{background:"#050505",marginRight: 10,marginBottom:5, display:"flex",flexWrap:"wrap",height:40,width:40,justifyContent:"center"}}
-                      
-                                size={"large"}
-                                variant={"contained"}
-                                onClick={() => {
-                                    navigate("/admin/signin")
-                                }}
-                            >ADMIN</Button>
 
+                    <LandingPage/>
 
                     </div>
-                           
+
                         </div>
-                    }
                 </div>
                 <div>
                 </div>
             </Grid>
             <Grid item xs={12} md={6} lg={6}  style={{marginTop: 10}}>
+            
                 <img src={"https://cdn-gkoob.nitrocdn.com/TmnXXZHhdsQBcdKrWSrrxYcYJKLiuUED/assets/images/optimized/rev-d932da8/wp-content/uploads/2022/07/deneme2.png"} width={"100%"} />
+
             </Grid>
             <section>
         <ParallaxText baseVelocity={2}>A Place to Learn and Provide some quality Content</ParallaxText>
         </section>
-
-            
+        <CardLanding/>
         </Grid>
          <Grid container spacing={5}>
                 <Grid item xs={12} md={4} lg={4} style={{ marginTop: 10 }}>
@@ -169,11 +135,11 @@ export const Landing = () => {
                     />
                 </Grid>
             </Grid>
-
+            <MyComponent/>
+            <FeatureSection/>
             <Footer/>
 
 
-            
     
     </div>
 }

@@ -1,0 +1,129 @@
+/* styles.css */
+
+:global(body) { 
+    font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif; 
+  }
+  
+  .main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width:auto;
+    font-size: 16px;
+    font-weight: 400;
+    margin: auto;
+    background: #ffffff;
+  }
+  
+  .hero {
+    text-align: center;
+  }
+  
+  .hero-title {
+    color: #20b486;
+    letter-spacing: -0.5px;
+    text-transform: capitalize;
+    font-size: 64px;
+    font-weight: 700;
+    line-height: 82px;
+    width: 70%;
+  }
+  
+  @media (max-width: 991px) {
+    .hero-title {
+      font-size: 40px;
+      line-height: 57px;
+    width: 100%;
+
+    }
+  }
+  
+  .hero-description {
+    color: #646464;
+    line-height: 29px;
+    margin-top: 20px;
+    width: 90%;
+  }
+  
+  @media (max-width: 991px) {
+    .hero-description {
+      max-width: 100%;
+    }
+  }
+  
+  .cta-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 36px;
+    gap: 20px;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 156%;
+  }
+  
+  .cta-primary, .cta-secondary {
+    border-radius: 8px;
+    padding: 16px 28px;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  
+  .cta-primary {
+    background-color: #20b486;
+    color: white;
+    border: 1px solid #20b486;
+    box-shadow: 0px 1px 2px rgba(16, 24, 40, 0.05), 0px 0px 0px 4px #f4ebff;
+  }
+  
+  .cta-secondary {
+    background-color: #eafff9;
+    color: #3bc49a;
+    border: 1px solid #eafff9;
+    box-shadow: 0px 1px 2px rgba(16, 24, 40, 0.05);
+  }
+  
+  .featuresicon {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 50px;
+    width:90%;
+    color: rgba(29, 41, 57, 0.7);
+    line-height: 40px;
+    padding: 0 20px;
+    background: #ffffff;
+    color: #4c835c;
+  }
+  
+  @media (max-width: 991px) {
+    .featuresicon {
+      flex-wrap: wrap;
+      margin-top: 40px;
+      margin-bottom: 10px;
+    }
+  }
+  
+  .feature-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .feature-image {
+    width: 25px;
+    height: 25px;
+  }
+  
+  .feature-title {
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  .text-dark {
+    color: rgba(16, 24, 40, 1);
+  }
+  
+  .text-highlight {
+    color: rgba(32, 180, 134, 1);
+  }
+  

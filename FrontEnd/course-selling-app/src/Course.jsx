@@ -8,6 +8,7 @@ import {courseDescription, courseImage, coursePrice, courseTitle, isCourseLoadin
 import { courseState } from "./store/atoms/course";
 import { EmailState, userEmailState } from "./store/selectors/userEmailState";
 import { useNavigate } from "react-router-dom";
+import Loader from "./circle";
 function Course() {
     let { courseId } = useParams();
     console.log(courseId);
@@ -37,9 +38,11 @@ function Course() {
     }, []);
 
     if (CourseLoading) {
-        return <div style={{height: "100vh", justifyContent: "center", flexDirection: "column"}}>
-            Loading....
-        </div>
+        return (
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection:"column", width:"100%"}}>
+            <Loader flag={true} />
+             </div>
+        )
     }
 
     return <div>

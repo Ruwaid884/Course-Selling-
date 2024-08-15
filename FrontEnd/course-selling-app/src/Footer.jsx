@@ -5,9 +5,9 @@ import {Link} from "react-router-dom";
 
 const Footer = ()=>{
     return(
-    <Box sx={{ bgcolor: 'primary.main', color: 'white', py: 6, }}>
+    <Box sx={{ bgcolor: '#20b486', color: 'white', py: 6, width:"100%" }}>
             <Container>
-                <Grid container spacing={4} lg={12} justifyContent={"space-between"}>
+                <Grid container spacing={4}  justifyContent={"space-between"}>
                     <Grid item xs={12} sm={12} lg={4}>
                         <Typography variant="h6" gutterBottom>
                             About us

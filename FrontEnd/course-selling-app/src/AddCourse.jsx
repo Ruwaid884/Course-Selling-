@@ -6,6 +6,7 @@ import axios from "axios";
 import { useRecoilState } from "recoil";
 import { userEmailState } from "./store/selectors/userEmailState";
 import { useNavigate } from "react-router-dom";
+import Footer from "./Footer";
 
 function AddCourse() {
   const [title, setTitle] = useState("");
@@ -20,7 +21,7 @@ function AddCourse() {
     navigate("/");
   }
   return (
-    <div style={{ display: "flex", justifyContent: "center" }}>
+    <div style={{ display: "flex", justifyContent: "center",flexDirection:"column",alignItems:"center" }}>
       <Card varint={"outlined"} style={{ width: 400, padding: 20, marginTop:50 }}>
 
         <Grid item xs={12} md={6} lg={6}>
@@ -144,6 +145,7 @@ function AddCourse() {
         </Button>
         </div>
       </Card>
+      <Footer/>
     </div>
   );
 }

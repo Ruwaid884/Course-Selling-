@@ -4,6 +4,7 @@ import { useRecoilValue } from 'recoil';
 import { EmailState, userEmailState } from './store/selectors/userEmailState';
 import { useNavigate, useParams } from 'react-router-dom';
 import './VideoPlayer.css'; // Import your custom CSS file for styling
+import Footer from './Footer';
 
 const VideoPlayer = () => {
   const [videos, setVideos] = useState([]);
@@ -51,6 +52,7 @@ const VideoPlayer = () => {
           </div>
         </div>
       ))}
+      <Footer/>
     </div>
   );
 };
