@@ -26,6 +26,20 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+
+
+const chatattachement = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "./attachments");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+const attachmentupload = multer({storage:chatattachement});
+
+
 // Admin routes
 
 router.post("/signup", async (req, res) => {
@@ -121,23 +135,53 @@ router.get("/chat/:roomId", authenticateJwt, async (req, res) => {
   }
 });
 
-router.post("/chat/:roomId", authenticateJwt, async (req, res) => {
+router.post("/chat/:roomId", authenticateJwt,attachmentupload.single('attachment'), async (req, res) => {
+  try{
   const admin = await Admin.findOne({ username: req.user.username });
   if (!admin) {
     res.status(404).send("user not found");
   } else {
+    
     const room = await Room.findOne({ classroom: req.params.roomId });
     if (!room) {
       res.status(404).json({ msg: "room not found" });
     } else {
-      const message = new Message(req.body);
-      message.save();
+      
+      console.log("hello");
+      console.log(req.file);
+      let url  = "";
+
+      if(req.file){
+          url=`http://localhost:3000/api/multimedia/${req.file.filename}`
+      }
+      const message = new Message({
+        message:req.body.message,
+        time: new Date(Date.now()).getHours() +
+        ":" +
+        new Date(Date.now()).getMinutes(),
+        room:req.body.room,
+        sender:req.body.sender,
+        attachment:url
+      });
+      console.log(message.attachment);
+      await message.save();
       room.messages.push(message);
       await room.save();
       res.status(200).json({ msg: "sent succesfully" });
     }
   }
-});
+
+}
+catch (error) {
+  console.error("/chat/:roomid/ post", error.message);
+  res.status(500).json({ msg: "Internal server error" });
+}
+} 
+);
+
+
+
+
 
 
 router.post(
@@ -180,7 +224,7 @@ router.post(
       await newVideo.save();
 
       // Respond with a success message and the created video document
-      res.json({ message: "Video uploaded successfully", video: newVideo });
+      res.status(200).json({ message: "Video uploaded successfully", video: newVideo });
     } catch (error) {
       console.error("Error uploading video:", error);
       res.status(500).json({ message: "Server error" });

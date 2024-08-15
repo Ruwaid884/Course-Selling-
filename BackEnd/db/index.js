@@ -25,6 +25,7 @@ const messageSchema = new mongoose.Schema({
   message: String,
   time: String,
   sender:String,
+  attachment:String
 });
 
 const videoSchema = new mongoose.Schema({
@@ -56,4 +57,5 @@ module.exports = {
   Room,
   Message,
   Video,
+  
 };

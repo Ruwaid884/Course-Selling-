@@ -7,6 +7,8 @@ const KEY_ID = "rzp_test_O6a77B92kQOpHr";
 const KEY_SECRET = "ExTahQ5f2P49vuc9YmDckMpK";
 const { HmacSHA256 } = require("crypto-js");
 const crypto = require("crypto");
+const multer = require("multer");
+
 
 const {
   authenticateJwt,
@@ -19,6 +21,18 @@ const { User, Course, Admin, Room, Message, Video } = require("../db");
 const { GenerateJwt } = require("../middleware/generate");
 
 const router = express.Router();
+
+const chatattachement = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "./attachments");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+const attachmentupload = multer({storage:chatattachement});
+
 
 router.post("/signup", async (req, res) => {
   // logic to sign up user
@@ -101,7 +115,7 @@ router.get("/chat/:roomId", authenticateJwtUsers, async (req, res) => {
   }
 });
 
-router.post("/chat/:roomId", authenticateJwtUsers, async (req, res) => {
+router.post("/chat/:roomId", authenticateJwtUsers,attachmentupload.single('attachment'), async (req, res) => {
   try {
     const user = await User.findOne({ username: req.user.username });
     if (!user) {
@@ -111,21 +125,35 @@ router.post("/chat/:roomId", authenticateJwtUsers, async (req, res) => {
       if (!room) {
         res.status(404).json({ msg: "Room not found" });
       } else {
-        const message = new Message(req.body);
-        message.save();
+        let url = "";
+        if(req.file){
+          url = `http://localhost:3000/api/multimedia/${req.file.filename}`
+        }
+    
+        const message = new Message({
+          message:req.body.message,
+          time: new Date(Date.now()).getHours() +
+          ":" +
+          new Date(Date.now()).getMinutes(),
+          room:req.body.room,
+          sender:req.body.sender,
+          attachment:url
+        });
+        console.log(message.attachment);
+       await message.save();
         room.messages.push(message);
-
-        // Save the updated room with the new message
         await room.save();
-
-        res.status(200).json({ msg: "Message sent successfully" });
+        res.status(200).json({ msg: "sent succesfully" });
       }
     }
-  } catch (error) {
+  
+  }
+  catch (error) {
     console.error("/chat/:roomid/ post", error.message);
     res.status(500).json({ msg: "Internal server error" });
   }
-});
+  } 
+  );
 
 router.post("/verify", authenticateJwtUsers, async (req, res) => {
   try {
